@@ -101,7 +101,7 @@ def process_datasets():
                 cycles_inputs.append(qv_curve)
                 cycles_targets.append(total_capacity)
             except Exception as e:
-                print(f"   ⚠️ Skipped Cycle {cycle_idx} due to error: {e}")
+                print(f"Skipped Cycle {cycle_idx} due to error: {e}")
                 pass
 
         if len(cycles_inputs) > 0:

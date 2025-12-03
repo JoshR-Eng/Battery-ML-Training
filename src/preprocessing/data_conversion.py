@@ -4,7 +4,7 @@ import re
 import datetime
 
 # --- CONFIGURATION ---
-# Using relative paths for portability
+# Using relative paths
 RAW_BASE_DIR = "data/data_raw/Battery Degradation Dataset"
 README_PATH = os.path.join(RAW_BASE_DIR, "Readme.txt")
 OUTPUT_DIR = "data/data_processed/standardized_cells"
@@ -49,7 +49,7 @@ def convert_time_to_seconds(time_val):
     if pd.isna(time_val):
         return 0.0
         
-    # If it's already a number (int/float), just return it
+    # If it's already a (int/float), just return it
     if isinstance(time_val, (int, float)):
         return float(time_val)
         
@@ -81,7 +81,7 @@ def convert_time_to_seconds(time_val):
 def standardize_dataset():
     meta_map = parse_readme_metadata(README_PATH)
     if not meta_map:
-        print("⚠️ No metadata found. Exiting.")
+        print("No metadata found. Exiting.")
         return
 
     print("Scanning directories...")
@@ -139,7 +139,7 @@ def standardize_dataset():
                 df.to_parquet(dest_path, index=False)
                 
             except Exception as e:
-                print(f"💥 Failed to convert Cell #{cell_id}: {e}")
+                print(f"Failed to convert Cell #{cell_id}: {e}")
 
     print(f"\nDone - Processed files are in: {OUTPUT_DIR}")
 
