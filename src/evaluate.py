@@ -163,7 +163,7 @@ def evaluate():
                         va='center', transform=ax.transAxes)
 
         # 5. Save the Combined Figure for this Group
-        save_filename = f"results_lstm_{group_name}.png"
+        save_filename = f"figures/results_lstm_{group_name}.png"
         plt.savefig(save_filename)
         plt.close() # clear memory
         
