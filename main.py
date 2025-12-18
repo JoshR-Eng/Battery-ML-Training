@@ -58,9 +58,9 @@ def main():
     test_cells  = BatteryDataset(data_dir, TEST_CELLS, normalise=True)
 
         # Clump data into a format that can be passed straight into ML model
-    train_loader = DataLoader(train_ds, batch_size=cfg['data']['batch_size'], shuffle=True)
-    val_loader   = DataLoader(val_ds, batch_size=cfg['data']['batch_size'], shuffle=False)
-    test_loader  = DataLoader(test_ds, batch_size=1, shuffle=False)
+    train_loader = DataLoader(train_cells, batch_size=CONFIG['data']['batch_size'], shuffle=True)
+    val_loader   = DataLoader(val_cells, batch_size=CONFIG['data']['batch_size'], shuffle=False)
+    test_loader  = DataLoader(test_cells, batch_size=1, shuffle=False)
 
 
     # 3. Build Model
@@ -74,7 +74,7 @@ def main():
         # If train is in the mode, train the specified model
     if "train" in mode:
         print("\nStarting Training...")
-        model_config = CONFIG['models'][cfg['model']]
+        model_config = CONFIG['models'][CONFIG['model']]
 
         trained_model = train_model(
             model = model,
@@ -83,7 +83,8 @@ def main():
             device = device,
             epochs = model_config['epochs'],
             lr = model_config['learning_rate'],
-            save_dir = save_dir
+            save_dir = save_dir,
+            CONFIG = CONFIG
         )
         
         model = trained_model # Update model with best weights

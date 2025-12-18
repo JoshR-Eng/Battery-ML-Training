@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import os
+import time
 
 
 # ==========================================================================
@@ -19,7 +20,7 @@ import os
 # ==========================================================================
 
 def train_model(model, train_loader, val_loader,
-                device, epochs, lr, save_dir):
+                device, epochs, lr, save_dir, CONFIG):
 
     # Setup Optimiser
     criterion = nn.MSELoss()
@@ -30,7 +31,7 @@ def train_model(model, train_loader, val_loader,
     start_time = time.time()
     best_val_rmse = float('inf')
 
-    for epoch in range(lstm_train['epochs']):
+    for epoch in range(epochs):
         model.train()
         train_loss = 0.0
 
@@ -71,14 +72,15 @@ def train_model(model, train_loader, val_loader,
         
         # Logging
         if (epoch + 1) % 10 == 0:
-            print(f"\tEpoch {epoch+1:03d}/{lstm_train['epochs']} | " \
+            print(f"\tEpoch {epoch+1:03d}/{epochs} | " \
                     f"Train Loss: {train_loss:.6f} | " \
                     f"Val RMSE: {val_rmse:.5f}")
         
         # Checkpointing
         if val_rmse < best_val_rmse:
             best_val_rmse = val_rmse
-            save_path = os.path.join(SAVE_DIR, "best_lstm.pth")
+            save_path = os.path.join(save_dir, 
+                                     f"{CONFIG['model']}.pth")
             torch.save(model.state_dict(), save_path)
 
     total_time = time.time() - start_time

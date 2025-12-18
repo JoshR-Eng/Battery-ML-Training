@@ -28,7 +28,7 @@ VAL_CELLS = ["04", "08", "42", "43"]
 
 # Edge Test Data:
 #   - Fixed Discharge Profiles
-TEST_CELLS = ["13", "22", "32"]
+TEST_CELLS = ["22", "32"]
 
 
 # ==========================================================================
@@ -68,7 +68,7 @@ class BatteryDataset(Dataset):
             # 2. Load the .pt file
             try:
                 # weights_only=False helps avoid future warning errors in some vers
-                data = torch.load(path)
+                data = torch.load(path, weights_only=True)
                 x_cell = data['X'] # Shape: (Num_Cycles, 120)
                 y_cell = data['y'] # Shape: (Num_Cycles,)
                 

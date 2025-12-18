@@ -4,12 +4,12 @@
 #                     Experimental Control
 # -----------------------------------------------------------
 
-experiment_name: "LSTM_Baseline_01"
+experiment_name: "TCN_Baseline_01"
 output_dir: "./results"
 device: "auto"      # ( cuda / cpu / auto )
 
 mode: "train-eval"  # ( train / eval / train-eval)
-model: "LSTM"       # ( LSTM / TCN )
+model: "TCN"       # ( LSTM / TCN )
 
 
 
@@ -18,7 +18,7 @@ model: "LSTM"       # ( LSTM / TCN )
 # -----------------------------------------------------------
 
 data:
-  dir: "../data/tensors_qv"
+  dir: "./data/tensors_qv"
   batch_size: 32
   num_workers: 4
   nominal_capacity: 2.4
@@ -38,7 +38,14 @@ models:
     dropout: 0.1
     output_size: 1
     learning_rate: 0.001
-    epochs: 200
+    epochs: 150
 
   TCN:
+    input_size: 1
+    hidden_size: 64
+    output_size: 1
+    kernel_size: 5
+    dropout: 0.1
+    learning_rate: 0.001
+    epochs: 150
     
