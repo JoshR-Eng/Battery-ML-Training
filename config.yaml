@@ -4,7 +4,7 @@
 #                     Experimental Control
 # -----------------------------------------------------------
 
-experiment_name: "TCN_Baseline_01"
+experiment_name: "TCN"
 output_dir: "./results"
 device: "auto"      # ( cuda / cpu / auto )
 

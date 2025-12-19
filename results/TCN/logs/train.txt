@@ -1,0 +1,25 @@
+
+ --- Training Experiment: TCN ---
+
+Starting Training Loop...
+	Epoch 010/150 | Train Loss: 0.003129 | Val RMSE: 0.02117
+	Epoch 020/150 | Train Loss: 0.002891 | Val RMSE: 0.03645
+	Epoch 030/150 | Train Loss: 0.002587 | Val RMSE: 0.03890
+	Epoch 040/150 | Train Loss: 0.001885 | Val RMSE: 0.01417
+	Epoch 050/150 | Train Loss: 0.002500 | Val RMSE: 0.01512
+	Epoch 060/150 | Train Loss: 0.002388 | Val RMSE: 0.01580
+	Epoch 070/150 | Train Loss: 0.001893 | Val RMSE: 0.01140
+	Epoch 080/150 | Train Loss: 0.001365 | Val RMSE: 0.01791
+	Epoch 090/150 | Train Loss: 0.001439 | Val RMSE: 0.02230
+	Epoch 100/150 | Train Loss: 0.001389 | Val RMSE: 0.01022
+	Epoch 110/150 | Train Loss: 0.001125 | Val RMSE: 0.03116
+	Epoch 120/150 | Train Loss: 0.001217 | Val RMSE: 0.01472
+	Epoch 130/150 | Train Loss: 0.000886 | Val RMSE: 0.01371
+	Epoch 140/150 | Train Loss: 0.001009 | Val RMSE: 0.00863
+	Epoch 150/150 | Train Loss: 0.000748 | Val RMSE: 0.01750
+
+Done!
+
+ 	Total Time: 24.4s
+	Best RMSE: 0.00814
+	Model Saved: /home/joshr/batt_ml/results/TCN/TCN.pth
