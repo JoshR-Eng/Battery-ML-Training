@@ -7,3 +7,7 @@ cd ~/batt_ml
 # Activate virtual environment
 echo "Activating Virtual Environment"
 source ~/batt_ml/.venv/bin/activate
+
+
+# Run the main python script
+python3 main.py

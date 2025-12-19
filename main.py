@@ -12,6 +12,7 @@ DESCRIPTION: Main script to run training and/or evaluation
     # Python Packages
 import os
 import yaml
+import sys
 import torch
 from torch.utils.data import DataLoader
 
@@ -20,6 +21,7 @@ from src.data.dataset import BatteryDataset, TRAIN_CELLS, VAL_CELLS, TEST_CELLS
 from src.models import get_model
 from src.engine.trainer import train_model
 from src.engine.evaluator import evaluate_model
+from src.utils.logger import Logger
 
     # Import the configuration file 'config.yaml'
 def load_config(path="config.yaml"):
@@ -46,6 +48,7 @@ def main():
     print(f"Running Experiment: {CONFIG['experiment_name']} on {device}")
     save_dir = os.path.join(CONFIG['output_dir'], CONFIG['experiment_name'])
     os.makedirs(save_dir, exist_ok = True)
+    log_dir = os.path.join(save_dir, "logs")
 
 
     # 2. Dataset
@@ -71,35 +74,76 @@ def main():
     # 4. Execution Mode
     mode = CONFIG['mode'] # Mode determines is code run train and/or evaluation
 
-        # If train is in the mode, train the specified model
+
+
+                # ================= TRAINING SECTION =================
     if "train" in mode:
-        print("\nStarting Training...")
-        model_config = CONFIG['models'][CONFIG['model']]
 
-        trained_model = train_model(
-            model = model,
-            train_loader = train_loader,
-            val_loader = val_loader,
-            device = device,
-            epochs = model_config['epochs'],
-            lr = model_config['learning_rate'],
-            save_dir = save_dir,
-            CONFIG = CONFIG
-        )
-        
-        model = trained_model # Update model with best weights
+        # Log any information printed to terminal
+        original_stdout = sys.stdout
+        log_filepath = os.path.join(log_dir, "train.txt")
+        sys.stdout = Logger(log_filepath)
 
-        # If evaluation is in the mode, evaluate the model
+        # Run Training
+        try:
+            print(f"\n --- Training Experiment: {CONFIG['experiment_name']} ---")
+
+            model_config = CONFIG['models'][CONFIG['model']]
+
+            trained_model = train_model(
+                model = model,
+                train_loader = train_loader,
+                val_loader = val_loader,
+                device = device,
+                epochs = model_config['epochs'],
+                lr = model_config['learning_rate'],
+                save_dir = save_dir,
+                CONFIG = CONFIG
+            )
+
+            model = trained_model # Update model with best weights
+        finally:
+            sys.stdout.close()
+            sys.stdout = original_stdout
+
+
+
+                # ================= EVALUATION SECTION =================
     if "eval" in mode:
-        print("\nStarting Evaluation...")
-        evaluate_model(
-            model = model,
-            device = device,
-            data_dir = CONFIG['data']['dir'],
-            save_dir = save_dir,
-            cells_list = TEST_CELLS,
-            group_name = "Test Cells"
-        )
+
+        # Log any information printed to terminal
+        original_stdout = sys.stdout
+        log_filepath = os.path.join(log_dir, "eval.txt")
+        sys.stdout = Logger(log_filepath)
+
+        # Run evaluation
+        try:
+            print(f"\n --- Evaluation Experiment: {CONFIG['experiment_name']} ---")
+
+            # Evaluate on Validation Set
+            evaluate_model(
+                model=model,
+                device=device,
+                data_dir=CONFIG['data']['dir'], 
+                save_dir=save_dir, 
+                cells_list=VAL_CELLS, 
+                group_name="Validation Cells"
+            )
+
+
+            # Evaluate on Test Set
+            evaluate_model(
+                model = model,
+                device = device,
+                data_dir = CONFIG['data']['dir'],
+                save_dir = save_dir,
+                cells_list = TEST_CELLS,
+                group_name = "Test Cells"
+            )
+
+        finally:
+            sys.stdout.close()
+            sys.stdout = original_stdout
 
 
 
