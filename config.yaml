@@ -4,12 +4,12 @@
 #                     Experimental Control
 # -----------------------------------------------------------
 
-experiment_name: "TCN"
+experiment_name: "LSTM"
 output_dir: "./results"
 device: "auto"      # ( cuda / cpu / auto )
 
 mode: "train-eval"  # ( train / eval / train-eval)
-model: "TCN"       # ( LSTM / TCN )
+model: "LSTM"       # ( LSTM / TCN )
 
 
 

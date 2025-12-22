@@ -22,6 +22,7 @@ from src.models import get_model
 from src.engine.trainer import train_model
 from src.engine.evaluator import evaluate_model
 from src.utils.logger import Logger
+from src.utils.export import export_model
 
     # Import the configuration file 'config.yaml'
 def load_config(path="config.yaml"):
@@ -48,7 +49,11 @@ def main():
     print(f"Running Experiment: {CONFIG['experiment_name']} on {device}")
     save_dir = os.path.join(CONFIG['output_dir'], CONFIG['experiment_name'])
     os.makedirs(save_dir, exist_ok = True)
+
     log_dir = os.path.join(save_dir, "logs")
+    os.makedirs(log_dir, exist_ok = True)
+
+    export_path = os.path.join(save_dir, f"{CONFIG['model']}.onnx")
 
 
     # 2. Dataset
@@ -102,6 +107,13 @@ def main():
             )
 
             model = trained_model # Update model with best weights
+
+            # Export model to ONNX filetype
+            export_model(
+                model = model,
+                filepath = export_path,
+                device = device
+            )
         finally:
             sys.stdout.close()
             sys.stdout = original_stdout

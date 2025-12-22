@@ -1,0 +1,27 @@
+
+ --- Training Experiment: LSTM ---
+
+Starting Training Loop...
+	Epoch 010/150 | Train Loss: 0.012526 | Val RMSE: 0.13948
+	Epoch 020/150 | Train Loss: 0.013163 | Val RMSE: 0.14475
+	Epoch 030/150 | Train Loss: 0.012068 | Val RMSE: 0.14585
+	Epoch 040/150 | Train Loss: 0.012297 | Val RMSE: 0.13670
+	Epoch 050/150 | Train Loss: 0.012317 | Val RMSE: 0.14105
+	Epoch 060/150 | Train Loss: 0.012247 | Val RMSE: 0.14541
+	Epoch 070/150 | Train Loss: 0.011818 | Val RMSE: 0.13035
+	Epoch 080/150 | Train Loss: 0.000896 | Val RMSE: 0.03688
+	Epoch 090/150 | Train Loss: 0.000308 | Val RMSE: 0.00984
+	Epoch 100/150 | Train Loss: 0.000204 | Val RMSE: 0.00896
+	Epoch 110/150 | Train Loss: 0.000172 | Val RMSE: 0.01111
+	Epoch 120/150 | Train Loss: 0.000147 | Val RMSE: 0.01206
+	Epoch 130/150 | Train Loss: 0.000174 | Val RMSE: 0.01864
+	Epoch 140/150 | Train Loss: 0.000140 | Val RMSE: 0.01241
+	Epoch 150/150 | Train Loss: 0.000087 | Val RMSE: 0.01327
+
+Done!
+
+ 	Total Time: 17.8s
+	Best RMSE: 0.00868
+	Model Saved: /home/joshr/batt_ml/results/LSTM/LSTM.pth
+Exporting to ONNX file type to './results/LSTM/LSTM.onnx'...
+	Successfully Exported!

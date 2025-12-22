@@ -1,0 +1,14 @@
+
+ --- Evaluation Experiment: LSTM ---
+Evaluating Cell Data: Validation Cells
+   Cell 04 | RMSE: 0.0222 Ah
+   Cell 08 | RMSE: 0.0203 Ah
+   Cell 42 | RMSE: 0.0573 Ah
+   Cell 43 | RMSE: 0.0262 Ah
+   Plot saved to: ./results/LSTM/results_Validation Cells.png
+   Average Validation Cells RMSE: 0.0315 Ah
+Evaluating Cell Data: Test Cells
+   Cell 22 | RMSE: 0.2317 Ah
+   Cell 32 | RMSE: 0.2032 Ah
+   Plot saved to: ./results/LSTM/results_Test Cells.png
+   Average Test Cells RMSE: 0.2174 Ah
