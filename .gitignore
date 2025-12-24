@@ -1,2 +1,3 @@
 .venv
 data/data_raw/*
+data/data_processed/*
