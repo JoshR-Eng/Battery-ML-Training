@@ -7,7 +7,7 @@ import datetime
 # Using relative paths
 RAW_BASE_DIR = "data/data_raw/Battery Degradation Dataset"
 README_PATH = os.path.join(RAW_BASE_DIR, "Readme.txt")
-OUTPUT_DIR = "data/data_processed/standardized_cells"
+OUTPUT_DIR = "data/data_processed"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -121,14 +121,32 @@ def standardize_dataset():
                 df.columns = [str(c).strip().lower() for c in df.columns]
                 
                 # 2. Fix the Time Column
-                # Use a flexible search for the time column name
-                time_col = next((c for c in df.columns if "time" in c and "date" not in c), None)
+                # HUST dataset has 1Hz sampling (1 second per data point)
+                # The Test_Time(s) column has parsing issues, so reconstruct from Data_Point
+                data_point_col = next((c for c in df.columns if "data" in c and "point" in c), None)
                 
-                if time_col:
-                    # Apply the conversion logic row-by-row
-                    df[time_col] = df[time_col].apply(convert_time_to_seconds)
-                    # Rename to standard 'time_s' for ML script clarity
-                    df.rename(columns={time_col: 'time_s'}, inplace=True)
+                if data_point_col:
+                    # Group by cycle and create cumulative time within each cycle
+                    # Data_Point resets or continues across cycles, so we handle per-cycle
+                    if 'cycle_index' in df.columns:
+                        df['time_s'] = 0.0
+                        for cycle_id in df['cycle_index'].unique():
+                            mask = df['cycle_index'] == cycle_id
+                            cycle_data = df.loc[mask, data_point_col].values
+                            # Time = (sequential index) * 1 second
+                            df.loc[mask, 'time_s'] = (cycle_data - cycle_data[0])
+                    else:
+                        # If no cycle_index, assume continuous time
+                        df['time_s'] = df[data_point_col] - df[data_point_col].iloc[0]
+                    
+                    print(f"  ✓ Created time_s from {data_point_col} (1Hz sampling)")
+                else:
+                    # Fallback: Try to parse Test_Time column (will likely fail for later cycles)
+                    time_col = next((c for c in df.columns if "time" in c and "date" not in c), None)
+                    if time_col:
+                        df[time_col] = df[time_col].apply(convert_time_to_seconds)
+                        df.rename(columns={time_col: 'time_s'}, inplace=True)
+                        print(f"  ⚠ Used {time_col} (may have issues with later cycles)")
                 
                 # 3. Ensure numeric types for other key columns
                 for col in df.columns:
