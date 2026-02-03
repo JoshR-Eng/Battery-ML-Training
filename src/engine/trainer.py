@@ -25,11 +25,21 @@ def train_model(model, train_loader, val_loader,
     # Setup Optimiser
     criterion = nn.MSELoss()
     optimiser = optim.Adam(model.parameters(), lr=lr)
+    
+    # Learning rate scheduler (reduces LR when validation plateaus)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+        optimiser, mode='min', factor=0.5, patience=10, verbose=True
+    )
 
+    # Early stopping parameters
+    #     | If model stops improving before set epochs, just stop early.
+    best_val_rmse = float('inf')
+    patience = 20  # Stop if no improvement for 20 epochs
+    patience_counter = 0
+    
     # Training Loop
     print("\nStarting Training Loop...")
     start_time = time.time()
-    best_val_rmse = float('inf')
 
     for epoch in range(epochs):
         model.train()
@@ -68,6 +78,9 @@ def train_model(model, train_loader, val_loader,
 
         val_loss /= len(val_loader.dataset)
         val_rmse = np.sqrt(val_loss)
+        
+        # Update learning rate based on validation performance
+        scheduler.step(val_rmse)
 
         
         # Logging
@@ -76,17 +89,28 @@ def train_model(model, train_loader, val_loader,
                     f"Train Loss: {train_loss:.6f} | " \
                     f"Val RMSE: {val_rmse:.5f}")
         
-        # Checkpointing
+        # Checkpointing + Early Stopping
         if val_rmse < best_val_rmse:
             best_val_rmse = val_rmse
+            patience_counter = 0  # Reset patience
             save_path = os.path.join(save_dir, 
                                      f"{CONFIG['model']}.pth")
             torch.save(model.state_dict(), save_path)
+        else:
+            patience_counter += 1
+            
+        # Early stopping check
+        if patience_counter >= patience:
+            print(f"\nEarly stopping at epoch {epoch+1} (no improvement for {patience} epochs)")
+            break
 
     total_time = time.time() - start_time
     print(f"\nDone!\n\n \tTotal Time: {total_time:.1f}s")
     print(f"\tBest RMSE: {best_val_rmse:.5f}")
     print(f"\tModel Saved: {os.path.abspath(save_path)}")
+    
+    # Load best weights before returning
+    model.load_state_dict(torch.load(save_path))
 
     return model
 

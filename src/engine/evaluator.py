@@ -11,7 +11,7 @@ import torch
 import numpy as np
 import os
 import matplotlib
-matplotlib.use('Agg') # Runs matplotlib in headless mode
+matplotlib.use('Agg') # Runs matplotlib in headless mode as I'm running WSL
 import matplotlib.pyplot as plt
 
 from torch.utils.data import DataLoader
@@ -45,13 +45,13 @@ def evaluate_model(model, device, data_dir, save_dir, cells_list,
     valid_cells_count = 0
 
 
-    # 2. Iterate Per Cell (Crucial for visualization)
+    # 2. Iterate Per Cell 
     for i, cell_id in enumerate(cells_list):
         ax = axes[i]
         
         try:
             # Load ONLY this specific cell
-            # We construct a temporary dataset just for this loop
+            # Then construct a temporary dataset just for this loop
             ds = BatteryDataset(data_dir, [cell_id], normalise=True)
             
             if len(ds) == 0:
@@ -72,17 +72,20 @@ def evaluate_model(model, device, data_dir, save_dir, cells_list,
                     actuals.append(y.item())
             
     # 3. Denormalize (Nominal Capacity = 2.4Ah)
-            #    If you change nominal capacity, pass it as an arg!
+            #   If I need to change Nom. Cap. make it a func. arg 
             preds = np.array(predictions) * 2.4 
             acts = np.array(actuals) * 2.4      
     
 
     # 4. Metrics
             rmse = np.sqrt(np.mean((preds - acts)**2))
+            mae = np.mean(np.abs(preds - acts))
+            mape = np.mean(np.abs((preds - acts) / acts)) * 100
+            
             group_rmse_sum += rmse
             valid_cells_count += 1
             
-            print(f"   Cell {cell_id} | RMSE: {rmse:.4f} Ah")
+            print(f"   Cell {cell_id} | RMSE: {rmse:.4f} Ah | MAE: {mae:.4f} Ah | MAPE: {mape:.2f}%")
             
             # 5. Plot
             ax.plot(acts, label='Actual', color='black', linewidth=2)
