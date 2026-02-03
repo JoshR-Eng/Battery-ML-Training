@@ -4,12 +4,12 @@
 #                     Experimental Control
 # -----------------------------------------------------------
 
-experiment_name: "LSTM"
+experiment_name: "CNN-LSTM"
 output_dir: "./results"
 device: "auto"      # ( cuda / cpu / auto )
 
 mode: "train-eval"  # ( train / eval / train-eval)
-model: "LSTM"       # ( LSTM / TCN )
+model: "LSTM"   # ( LSTM, CNN-LSTM, GRU, CNN-GRU, TCN )
 
 
 
@@ -31,6 +31,7 @@ data:
 
 models:
 
+  # ------------------------- LSTM --------------------------
   LSTM:
     input_size: 1
     hidden_size: 64
@@ -40,6 +41,41 @@ models:
     learning_rate: 0.001
     epochs: 150
 
+  CNN-LSTM:
+    input_size: 1
+    cnn_channels: [16, 32, 64]      # Progressive feature extraction
+    kernel_size: 5                   # Captures 5 voltage points at once
+    lstm_hidden_size: 64
+    lstm_layers: 2
+    output_size: 1
+    dropout: 0.2
+    learning_rate: 0.001
+    epochs: 150
+
+
+  # ------------------------- GRU ---------------------------
+  GRU:
+    input_size: 1
+    hidden_size: 64
+    num_layers: 2
+    dropout: 0.1
+    output_size: 1
+    learning_rate: 0.001
+    epochs: 150
+  
+  CNN-GRU:
+    input_size: 1
+    cnn_channels: [16, 32, 64]      # Same as CNN-LSTM
+    kernel_size: 5
+    gru_hidden_size: 64
+    gru_layers: 2
+    output_size: 1
+    dropout: 0.2
+    learning_rate: 0.001
+    epochs: 150
+
+
+  # ------------------------- TCN ---------------------------
   TCN:
     input_size: 1
     hidden_size: 64
@@ -48,4 +84,6 @@ models:
     dropout: 0.1
     learning_rate: 0.001
     epochs: 150
-    
+  
+   
+  
