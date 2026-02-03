@@ -9,26 +9,35 @@ from torch.utils.data import Dataset
 import os
 
 # ==========================================================================
-# --------              EXPERIMENTAL SPLITS (Based on Paper)        --------
+# --------              EXPERIMENTAL SPLITS (Stratified - All Protocols)  --------
 # ==========================================================================
 
-# Training Data:
-#   - Random Charge
-#   - 3C Discharge
+# STRATIFIED SPLIT: All protocols represented in train/val/test
+# This prevents distribution shift and ensures fair evaluation
+
+# Training Data (70%): Mixed protocols for robust learning
 TRAIN_CELLS = [
-    "01", "03", "05", "07", "09", "11", "14", "15", 
-    "17", "18", "20", "21", "24", "25", "27", "28", 
-    "30", "31", "33", "34", "36", "37", "39", "40"
+    '01', '05', '06', '07', '09', '11', '12', '14', '15', '17', 
+    '22', '23', '24', '25', '28', '30', '31', '33', '34', '35', 
+    '36', '37', '39', '41', '42', '46', '47', '48', '49', '50', 
+    '52', '54', '58', '59', '62', '63', '65', '66', '67', '68', 
+    '69', '70', '71', '72', '74', '75', '77'
 ]
 
-# Validation Data:
-#   - Random Charge
-#   - 3C Discharge
-VAL_CELLS = ["04", "08", "42", "43"] 
+# Validation Data (15%): Mixed protocols for fair tuning
+VAL_CELLS = [
+    '18', '26', '27', '38', '40', '43', '53', '55', '57', '60', '64', '73'
+]
 
-# Edge Test Data:
-#   - Fixed Discharge Profiles
-TEST_CELLS = ["22", "32"]
+# Test Data (15%): Mixed protocols for unbiased evaluation
+TEST_CELLS = [
+    '03', '04', '08', '20', '21', '29', '32', '44', '45', '51', '56', '61', '76'
+]
+
+# OLD SPLIT (Distribution mismatch - DO NOT USE):
+# TRAIN_CELLS = ["01", "03", "05", ..., "40"]  # Only Rd_3C
+# VAL_CELLS = ["04", "08", "42", "43"]  # Only Rd_3C
+# TEST_CELLS = ["22", "32"]  # Only fixed protocols (causes 7× error!)
 
 
 # ==========================================================================
