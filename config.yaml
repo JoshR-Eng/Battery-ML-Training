@@ -4,12 +4,12 @@
 #                     Experimental Control
 # -----------------------------------------------------------
 
-experiment_name: "CNN-LSTM"
+experiment_name: "01/GRU"
 output_dir: "./results"
 device: "auto"      # ( cuda / cpu / auto )
 
 mode: "train-eval"  # ( train / eval / train-eval)
-model: "LSTM"   # ( LSTM, CNN-LSTM, GRU, CNN-GRU, TCN )
+model: "GRU"
 
 
 
@@ -23,7 +23,8 @@ data:
   num_workers: 4
   nominal_capacity: 2.4
 
-
+export:
+  batch_size: [1, 32]
 
 # -----------------------------------------------------------
 #                     Machine Learning Models
