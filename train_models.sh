@@ -102,8 +102,9 @@ for i in "${!MODELS_TO_TRAIN[@]}"; do
     fi
     
     # Update config.yaml with sed
-    sed -i "s/^experiment_name:.*/experiment_name: \"$EXPERIMENT_NAME\"/" "$CONFIG_FILE"
-    sed -i "s/^model:.*/model: \"$MODEL\"/" "$CONFIG_FILE"
+    # Use '|' as delimiter to avoid conflicts with '/' in EXPERIMENT_NAME
+    sed -i "s|^experiment_name:.*|experiment_name: \"$EXPERIMENT_NAME\"|" "$CONFIG_FILE"
+    sed -i "s|^model:.*|model: \"$MODEL\"|" "$CONFIG_FILE"
     
     echo "Experiment: $EXPERIMENT_NAME"
     echo "Model: $MODEL"
@@ -200,7 +201,7 @@ if [ -n "$BEST_MODEL" ]; then
     echo "   Test RMSE: ${BEST_RMSE} Ah"
     echo "   Val RMSE: ${RESULTS_VAL[$BEST_MODEL]} Ah"
     if [ -n "$BASE_EXPERIMENT_NAME" ]; then
-        echo "   Location: ./results/${BASE_EXPERIMENT_NAME}-${BEST_MODEL}/"
+        echo "   Location: ./results/${BASE_EXPERIMENT_NAME}/${BEST_MODEL}/"
     else
         echo "   Location: ./results/${BEST_MODEL}/"
     fi
