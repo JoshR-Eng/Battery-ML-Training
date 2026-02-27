@@ -1,12 +1,12 @@
 """
 NAME:        main.py
-VERSION:     1.0
+VERSION:     4.0 (Add multi batch export handling)
 DESCRIPTION: Main script to run training and/or evaluation
              of ML models as defined in config.yaml
 """
 
 # ==========================================================================
-# --------                      IMPORTS                         --------
+#                               IMPORTS                       
 # ==========================================================================
 
     # Python Packages
@@ -16,7 +16,7 @@ import sys
 import torch
 from torch.utils.data import DataLoader
 
-    # This is custom code found within Battery-ML/src/*
+    # This is custom code found within Batt-ML/src/*
 from src.data.dataset import BatteryDataset, TRAIN_CELLS, VAL_CELLS, TEST_CELLS
 from src.models import get_model
 from src.engine.trainer import train_model
@@ -39,7 +39,7 @@ device = torch.device("cuda" if torch.cuda.is_available() and
 
 
 # ==========================================================================
-# --------                  MAIN FUNCTION                         --------
+#                            MAIN FUNCTION                         
 # ==========================================================================
 
 def main():
@@ -52,8 +52,6 @@ def main():
 
     log_dir = os.path.join(save_dir, "logs")
     os.makedirs(log_dir, exist_ok = True)
-
-    export_path = os.path.join(save_dir, f"{CONFIG['model']}.onnx")
 
 
     # 2. Dataset
@@ -81,7 +79,7 @@ def main():
 
 
 
-                # ================= TRAINING SECTION =================
+    # --- TRAINING SECTION --------------------------------------------------
     if "train" in mode:
 
         # Log any information printed to terminal
@@ -109,18 +107,36 @@ def main():
             model = trained_model # Update model with best weights
 
             # Export model to ONNX filetype
-            export_model(
-                model = model,
-                filepath = export_path,
-                device = device
-            )
+            # Export different batch sizes as set in config file
+            for bs in CONFIG['export']['batch_size']:
+
+                # Create  specific batch size subfolder (e.g. test/bs1)
+                bs_dir = os.path.join(save_dir, f"bs{bs}")
+                os.makedirs(bs_dir, exist_ok=True)
+
+                # Define exact file path (e.g. test/bs1/<model>.onnx)
+                bs_export_path = os.path.join(bs_dir, f"{CONFIG['model']}.onnx")
+
+                print(f"\nExporting {CONFIG['model']}" \
+                        f"\n\tBatch size: {bs}" \
+                        f"\n\tFile Path : {bs_export_path}")
+
+                # Export the model with the specified batch size
+                export_model(
+                    model = model,
+                    filepath = bs_export_path,
+                    device = device,
+                    batch_size=bs
+                )
+
+
         finally:
             sys.stdout.close()
             sys.stdout = original_stdout
 
 
 
-                # ================= EVALUATION SECTION =================
+    # --- EVALUATION SECTION --------------------------------------------------
     if "eval" in mode:
 
         # Log any information printed to terminal
