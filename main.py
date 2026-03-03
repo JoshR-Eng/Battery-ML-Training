@@ -136,6 +136,37 @@ def main():
 
 
 
+    # --- EXPORT SECTION (load checkpoint + re-export without retraining) ------
+    if "export" in mode and "train" not in mode:
+
+        checkpoint_path = os.path.join(save_dir, f"{CONFIG['model']}.pth")
+        if not os.path.exists(checkpoint_path):
+            print(f"ERROR: checkpoint not found at {checkpoint_path}")
+            sys.exit(1)
+
+        model.load_state_dict(torch.load(checkpoint_path, map_location=device))
+        model.eval()
+        print(f"Loaded checkpoint: {checkpoint_path}")
+
+        for bs in CONFIG['export']['batch_size']:
+
+            bs_dir = os.path.join(save_dir, f"bs{bs}")
+            os.makedirs(bs_dir, exist_ok=True)
+
+            bs_export_path = os.path.join(bs_dir, f"{CONFIG['model']}.onnx")
+
+            print(f"\nExporting {CONFIG['model']}" \
+                    f"\n\tBatch size: {bs}" \
+                    f"\n\tFile Path : {bs_export_path}")
+
+            export_model(
+                model = model,
+                filepath = bs_export_path,
+                device = device,
+                batch_size=bs
+            )
+
+
     # --- EVALUATION SECTION --------------------------------------------------
     if "eval" in mode:
 
