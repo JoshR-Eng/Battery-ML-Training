@@ -1,6 +1,7 @@
 # Battery Capacity Prediction using Deep Learning
 
 Machine learning models for predicting lithium-ion battery capacity degradation from discharge voltage curves.
+This repository is also tied to [Edge Deployment](https://github.com/JoshR-Eng/Edge-ML) repository in which all these models are quantised and evaluated on a Jetson Orin Nano 4GB.
 
 ## Features
 
@@ -66,11 +67,3 @@ onnxruntime
 ```
 
 Install: `pip install -r requirements.txt`
-
-## Citation
-
-If you use this code in your research, please cite:
-
-```
-[diss citation will go here]
-```
